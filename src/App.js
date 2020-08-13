@@ -1,26 +1,44 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import posts from "./posts";
+import Post from "./Post";
+import UserButton from "./UserButton";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+
+  constructor(props){
+    super(props);
+
+    this.state = {
+      filteredPosts:posts
+    }
+    
+  }
+
+
+  whenTheButtonIsClicked(user){
+    let selectedUser = user;
+    let filteredPosts = posts.filter(post=>post.userId === selectedUser)
+    this.setState({filteredPosts:filteredPosts})
+  }
+
+  render(){
+
+    let userIds = [...new Set(posts.map(post=>post.userId))]
+
+    return (
+      <div className="main-content">
+        <div>
+          {userIds.map(uid=><UserButton whenClicked={this.whenTheButtonIsClicked.bind(this)} key={uid} user={uid}/>)}
+          <button onClick={()=>this.setState({filteredPosts:posts})} >reset</button>
+        </div>
+
+        <ul>
+          {this.state.filteredPosts.map(post=><Post key={post.id} post={post} />)}
+        </ul>
+      </div>
+  
+    );
+  }
 }
 
 export default App;
